@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Install zsh with custom config
+    become: true
+    ansible.builtin.apt:
+      name: zsh
+      state: present
+      update_cache: yes
+  
+  - name: Check for oh-my-zsh
+    stat: 
+      path: /home/parallels/.oh-my-zsh
+    register: omz_exists
+
+  - name: Install oh-my-zsh
+    become: true
+    become_user: parallels
+    when: omz_exists.stat.exists == False
+    shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > ~/.oh-my-installer && chmod +x ~/.oh-my-installer && ~/.oh-my-installer
+
+  - name: Checkout custom config
+    become: true
+    become_user: parallels
+    ansible.builtin.git:
+      repo: 'https://github.com/rogeraird/zshconfig.git'
+      dest: '~/zshconfig'
+  
+  - name: link custom config
+    become: true
+    become_user: parallels
+    shell: chmod +x ~/zshconfig/link.sh && cd ~/zshconfig && zsh ~/zshconfig/link.sh
+  
+  - name: Change shell
+    become: true
+    user:
+      name: parallels
+      shell: /usr/bin/zsh
