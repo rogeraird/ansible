@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Install neovim dependencies
+      become: true
+      ansible.builtin.apt:
+        name: ["ninja-build", "gettext", "cmake", "unzip", "curl"]
+        state: present
+        update_cache: yes
+    - name: Checkout neovim
+      ansible.builtin.git:
+        repo: 'https://github.com/neovim/neovim'
+        dest: '~/neovim'
+        version: 'stable'
+    - name: Build neovim
+      shell: cd /home/parallels/neovim && make -j 20
+    - name: Install neovim
+      become: true
+      shell: cd /home/parallels/neovim && make install
+    - name: Install custom config
+      ansible.builtin.git:
+        repo: 'https://github.com/rogeraird/kickstart.nvim.git'
+        dest: /home/parallels/.config/nvim
