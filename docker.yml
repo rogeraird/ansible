@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Add docker key
+      become: true
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add docker repo
+      become: true
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu jammy stable
+        state: present
+    - name: Install docker
+      become: true
+      ansible.builtin.apt:
+        name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-buildx-plugin', 'docker-compose-plugin']
+        state: present
+        update_cache: true
+    - name: Create docker group
+      become: true
+      ansible.builtin.group:
+        name: docker
+        state: present
+    - name: Add user to docker group
+      become: true
+      ansible.builtin.user:
+        name: parallels
+        groups: docker
+        append: true

@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Install miscellaneous packages
+      become: true
+      ansible.builtin.apt:
+        name: ['fonts-firacode', 'luajit']
+        state: present
+        update_cache: yes

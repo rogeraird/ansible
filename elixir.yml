@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Install dependencies for Erlang
+      become: true
+      ansible.builtin.apt:
+        name: ['libssl-dev', 'automake', 'autoconf', 'libncurses5-dev']
+        state: present
+        update_cache: true
+    - name: Check for asdf
+      stat:
+        path: ~/.asdf
+      register: asdf_checked_out
+    - name: Checkout asdf
+      ansible.builtin.git:
+        repo: 'https://github.com/asdf-vm/asdf.git'
+        dest: '~/.asdf'
+      when: asdf_checked_out.stat.exists == False
+    - name: Install Erlang plugin
+      shell: asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
+    - name: Install Erlang
+      shell: asdf install erlang latest
+    - name: Register Erlang version
+      shell: asdf global erlang latest
+    - name: Install elixir plugin
+      shell: asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+    - name: Install elixir
+      shell: asdf install elixir latest
+    - name: Register elixir version
+      shell: asdf global elixir latest
+    - name: Install node plugin
+      shell: asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    - name: Install node
+      shell: asdf install nodejs latest
+    - name: Register node
+      shell: asdf global nodejs latest
+
