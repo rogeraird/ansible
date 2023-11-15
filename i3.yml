@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Install i3
+    become: true
+    ansible.builtin.apt:
+      name: i3
+      state: present
+      update_cache: yes
