@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Install xmonad dependencies
+      become: true
+      ansible.builtin.apt:
+        name: ['libx11-dev', 'libxft-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxss-dev']
+        state: present
+        update_cache: yes
+    - name: Checkout xmonad
+      ansible.builtin.git:
+        repo: 'https://github.com/neovim/neovim'
+        dest: '~/.config/xmonad/xmonad'
+    - name: Checkout xmonad-contrib
+      ansible.builtin.git:
+        repo: 'https://github.com/xmonad/xmonad-contrib'
+        dest: '~/.config/xmonad/xmonad-contrib'
+    - name: Install stack
+      become: true
+      ansible.builtin.apt:
+        name: haskell-stack
+        state: present
+    - name: Upgrade stack
+      shell: stack upgrade
