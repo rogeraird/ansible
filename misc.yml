@@ -4,6 +4,6 @@
     - name: Install miscellaneous packages
       become: true
       ansible.builtin.apt:
-        name: ['fonts-firacode', 'luajit']
+        name: ['fonts-firacode', 'luajit', 'fzf', 'ripgrep']
         state: present
         update_cache: yes
