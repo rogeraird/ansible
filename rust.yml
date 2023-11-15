@@ -5,3 +5,16 @@
       become: true
       become_user: parallels
       shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+    - name: Checkout alacritty
+      ansible.builtin.git:
+        repo: 'https://github.com/alacritty/alacritty.git'
+        dest: '/home/parallels/alacritty'
+    - name: Install dependencies
+      become: true
+      ansible.builtin.apt:
+        name: ['cmake', 'pkg-config', 'libfreetype6-dev', 'libfontconfig1-dev', 'libxcb-xfixes0-dev', 'libxkbcommon-dev', 'python3']
+        state: present
+        update_cache: true
+    - name: Build release
+      shell: cd /home/parallels/alacritty && cargo build --release

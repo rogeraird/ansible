@@ -13,11 +13,11 @@
         dest: '~/neovim'
         version: 'stable'
     - name: Build neovim
-      shell: cd /home/parallels/neovim && make -j 20
+      shell: cd ~/neovim && make -j 20
     - name: Install neovim
       become: true
-      shell: cd /home/parallels/neovim && make install
+      shell: cd /home/roger/neovim && make install
     - name: Install custom config
       ansible.builtin.git:
         repo: 'https://github.com/rogeraird/kickstart.nvim.git'
-        dest: /home/parallels/.config/nvim
+        dest: ~/.config/nvim

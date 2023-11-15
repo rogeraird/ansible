@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Git email
+      become: true
+      become_user: roger
+      git_config:
+        name: user.email
+        scope: global
+        value: "rogeraird@gmail.com"
+    - name: Git name
+      become: true
+      become_user: roger
+      git_config:
+        name: user.name
+        scope: global
+        value: "Roger Aird"
