@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Install dependencies
+      become: true
+      ansible.builtin.apt:
+        name: ['autoconf', 'automake', 'pkg-config', 'libevent-dev', 'bison', 'ncurses-dev', 'build-essential']
+        state: present
+        update_cache: true
+    - name: Checkout tmux
+      ansible.builtin.git:
+        repo: https://github.com/tmux/tmux.git
+        dest: ~/tmux
+    - name: Build tmux
+      shell: cd ~/tmux && sh autogen.sh && ./configure && make
+    - name: Install tmux
+      become: true
+      shell: cd /home/parallels/tmux && make install
