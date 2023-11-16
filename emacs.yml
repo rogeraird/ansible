@@ -1,23 +1,24 @@
 ---
 - hosts: localhost
   tasks:
+    - name: Install build essential
+      become: true
+      ansible.builtin.apt:
+        name: ['build-essential']
+        state: present
+        update_cache: yes
     - name: Install emacs dependencies
       become: true
       ansible.builtin.apt:
-        name: ["ninja-build", "gettext", "cmake", "unzip", "curl"]
-        state: present
-        update_cache: yes
-    - name: Checkout neovim
+        pkg: emacs
+        state: build-dep
+    
+    - name: Checkout emacs
       ansible.builtin.git:
-        repo: 'https://github.com/neovim/neovim'
-        dest: '~/neovim'
-        version: 'stable'
-    - name: Build neovim
-      shell: cd /home/parallels/neovim && make -j 20
-    - name: Install neovim
+        repo: 'git://git.sv.gnu.org/emacs.git'
+        dest: '~/emacs'
+    - name: Build emacs
+      shell: cd ~/emacs/ && ./autogen.sh && ./configure && make -j2
+    - name: Install emacs
       become: true
-      shell: cd /home/parallels/neovim && make install
-    - name: Install custom config
-      ansible.builtin.git:
-        repo: 'https://github.com/rogeraird/kickstart.nvim.git'
-        dest: /home/parallels/.config/nvim
+      shell: cd /home/parallels/emacs && make install
